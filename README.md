@@ -1,5 +1,6 @@
-# Getting Started with Create React App
 [![Netlify Status](https://api.netlify.com/api/v1/badges/354da9dd-5362-46de-8384-e0048b4d8e2a/deploy-status)](https://app.netlify.com/sites/rex-covid-assistance/deploys)
+
+# Getting Started with Create React App
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
