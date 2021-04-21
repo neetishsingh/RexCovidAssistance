@@ -62,6 +62,7 @@ function Login() {
                 aria-describedby="email-helper"
                 type="email"
                 onChange={handleChange("email")}
+                value={values.email}
                 autoComplete="email"
                 required
               />

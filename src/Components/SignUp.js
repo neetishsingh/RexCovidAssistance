@@ -67,6 +67,7 @@ function Signup() {
                 aria-describedby="email-helper"
                 type="email"
                 onChange={handleChange("email")}
+                value={values.email}
                 autoComplete="email"
                 required
                 color="secondary"
@@ -88,6 +89,7 @@ function Signup() {
                 aria-describedby="name-helper"
                 type="text"
                 onChange={handleChange("name")}
+                value={values.name}
                 autoComplete="name"
                 required
                 color="secondary"
@@ -139,7 +141,7 @@ function Signup() {
                 id="password"
                 aria-describedby="Verfpassword-helper"
                 type={values.showPassword ? "text" : "password"}
-                value={values.password}
+                value={values.verfpass}
                 onChange={handleChange("verfpass")}
                 required
                 color="secondary"

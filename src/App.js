@@ -5,6 +5,7 @@ import Topbar from "./Components/Appbar";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import HomeView from "./Components/HomeView";
+import Datatable from "./Components/Datatable";
 function App() {
   return (
     <ThemeProvider theme={LightTheme}>
@@ -20,6 +21,7 @@ function App() {
           <Topbar>
             <Route path="/">
               <HomeView/>
+              <Datatable/>
             </Route>
           </Topbar>
         </Switch>
