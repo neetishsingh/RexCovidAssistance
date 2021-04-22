@@ -17,6 +17,7 @@ import {Link} from "react-router-dom";
 import SendIcon from "@material-ui/icons/Send";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Axios from "axios";
 function Signup() {
   const classes = useStyles();
   // is the minimum width 600px false for mobile devides
@@ -38,6 +39,31 @@ function Signup() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const Reset = (e) =>{
+    e.preventDefault();
+    setValues({
+      name: "",
+    email: "",
+    password: "",
+    verfpass: "",
+    showPassword: false,
+    });
+  };
+  const SignUp = async(e) => {
+    e.preventDefault();
+    if(values.password===values.verfpass)
+    {
+      let document = {Name: values.name, Email: values.email, Password: values.password};
+      let response = await Axios.post("http://localhost:5000/signup",document);
+      console.log(response.data.m);
+      return response.data.m;
+    }
+    else
+    {
+      alert("Password doesn't Match");
+      return -1;
+    }
+  }
   return (
     <Grid container>
       <Paper
@@ -112,7 +138,6 @@ function Signup() {
                 onChange={handleChange("password")}
                 required
                 color="secondary"
-                autoComplete="new-password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -138,14 +163,13 @@ function Signup() {
                 Verify Password
               </InputLabel>
               <Input
-                id="password"
+                id="Verifypassword"
                 aria-describedby="Verfpassword-helper"
                 type={values.showPassword ? "text" : "password"}
                 value={values.verfpass}
                 onChange={handleChange("verfpass")}
                 required
                 color="secondary"
-                autoComplete="new-password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -164,13 +188,14 @@ function Signup() {
             </FormControl>
           </Grid>
           <Grid item xs={12} className={classes.buttons}>
-            <Button color="primary" type="reset">
+            <Button color="primary" type="reset" onClick={Reset}>
               Cancel
             </Button>
             <Button
               variant="contained"
               color="secondary"
               type="submit"
+              onClick={SignUp}
               endIcon={<SendIcon />}
             >
               Submit

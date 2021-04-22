@@ -5,6 +5,7 @@ import Topbar from "./Components/Appbar";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import HomeView from "./Components/HomeView";
+import Detectlocation from "./Components/Detectlocation";
 import Datatable from "./Components/Datatable";
 function App() {
   return (
@@ -20,8 +21,10 @@ function App() {
           </Route>
           <Topbar>
             <Route path="/">
-              <HomeView/>
-              <Datatable/>
+              <HomeView>
+              <Detectlocation />
+              </HomeView>
+              <Datatable />
             </Route>
           </Topbar>
         </Switch>

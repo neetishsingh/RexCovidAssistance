@@ -1,22 +1,37 @@
+import {useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { Typography, useTheme } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import SearchIcon from "@material-ui/icons/Search";
-import SortIcon from '@material-ui/icons/Sort';
+import SortIcon from "@material-ui/icons/Sort";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import Detectlocation from "./Detectlocation";
-import {grey} from "@material-ui/core/colors";
-function HomeView() {
+import { grey } from "@material-ui/core/colors";
+import Axios from "axios";
+function HomeView(props) {
   const classes = useStyles();
   const theme = useTheme();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
+  const [search,setSearch] = useState("");
+  const searchDB = async(e) => {
+    e.preventDefault();
+    let response = await Axios.post("http://localhost:5000/centres",{searchTerm:search});
+    if(response.data.m === 'success')
+    {
+      console.log('success');
+    }
+    else
+    {
+      console.log('error');
+    }
+    return response;
+  }
   return (
-    
-      <Grid container>
+    <Grid container>
+      <form className={mediaQuery?classes.form_D:classes.form_M}>
         <Grid item xs={12} lg={11}>
           <Paper elevation={3}>
             <div className={classes.search}>
@@ -29,6 +44,8 @@ function HomeView() {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
+                value={search}
+                onChange={(event)=>setSearch(event.target.value)}
                 inputProps={{ "aria-label": "search" }}
               />
             </div>
@@ -45,18 +62,33 @@ function HomeView() {
             color="secondary"
             style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
             startIcon={<SearchIcon />}
+            type="submit"
+            onClick={searchDB}
           >
             Search
           </Button>
         </Grid>
-        <Grid item xs={12} className={classes.Button_M}>
-          <Detectlocation/>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6" style={{display:"inline-flex", color: grey[500]}}>Results</Typography>
-          <SortIcon style={{margin: theme.spacing(1), verticalAlign: "middle", fontSize: 35, color: grey[500]}}/>
-        </Grid>
+      </form>
+      <Grid item xs={12} className={classes.Button_M}>
+        {props.children}
       </Grid>
+      <Grid item xs={12}>
+        <Typography
+          variant="h6"
+          style={{ display: "inline-flex", color: grey[500] }}
+        >
+          Results
+        </Typography>
+        <SortIcon
+          style={{
+            margin: theme.spacing(1),
+            verticalAlign: "middle",
+            fontSize: 35,
+            color: grey[500],
+          }}
+        />
+      </Grid>
+    </Grid>
   );
 }
 
@@ -72,6 +104,13 @@ const useStyles = makeStyles((theme) => ({
     },
     marginLeft: 0,
     width: "inherit",
+  },
+  form_D: {
+    width: "100%",
+    display: "flex",
+  },
+  form_M: {
+    width: "100%",
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
