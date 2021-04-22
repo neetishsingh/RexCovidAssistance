@@ -13,11 +13,12 @@ import {
   Button,
   useMediaQuery,
 } from "@material-ui/core";
-import {Link} from "react-router-dom";
+import {Link,useHistory} from "react-router-dom";
 import SendIcon from "@material-ui/icons/Send";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Axios from "axios";
+import { useStateContext } from "../Context/ContextProvider";
 function Signup() {
   const classes = useStyles();
   // is the minimum width 600px false for mobile devides
@@ -29,6 +30,8 @@ function Signup() {
     verfpass: "",
     showPassword: false,
   });
+  const history = useHistory();
+  const [,dispatch] = useStateContext();
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
@@ -56,7 +59,11 @@ function Signup() {
       let document = {Name: values.name, Email: values.email, Password: values.password};
       let response = await Axios.post("http://localhost:5000/signup",document);
       console.log(response.data);
-      return response.data;
+      dispatch({
+        type: "ADD_USER",
+        data: response.data.user
+      });
+      history.push(`/dashboard/${response.data.user.Email}`);
     }
     else
     {
@@ -76,9 +83,9 @@ function Signup() {
               variant="h3"
               id="logo-font"
               className={classes.logo_grid}
-              style={{ marginBottom: "3%" }}
+              style={{ marginBottom: "3%",textAlign:"center" }}
             >
-              Vendor Sign-up
+              Vendor<br/>Sign-up
             </Typography>
           </Grid>
           <Grid item xs={12}>

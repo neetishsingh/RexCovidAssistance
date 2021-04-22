@@ -1,13 +1,15 @@
 import { ThemeProvider, CssBaseline } from "@material-ui/core";
 import LightTheme from "./Theme/LightTheme";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Topbar from "./Components/Appbar";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import HomeView from "./Components/HomeView";
 import Detectlocation from "./Components/Detectlocation";
 import Datatable from "./Components/Datatable";
+import UserDashboard from "./Components/UserDashboard";
+import TopBar from "./Components/Appbar";
 function App() {
+
   return (
     <ThemeProvider theme={LightTheme}>
       <CssBaseline />
@@ -19,14 +21,15 @@ function App() {
           <Route path="/signup">
             <SignUp />
           </Route>
-          <Topbar>
-            <Route path="/">
+          <Route path="/dashboard/:userEmail" component={UserDashboard}/>
+          <Route path="/">
+            <TopBar>
               <HomeView>
-              <Detectlocation />
+                <Detectlocation />
               </HomeView>
               <Datatable />
-            </Route>
-          </Topbar>
+            </TopBar>
+          </Route>
         </Switch>
       </Router>
     </ThemeProvider>

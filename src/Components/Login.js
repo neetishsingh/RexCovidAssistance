@@ -13,10 +13,11 @@ import {
   Button,
   useMediaQuery,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Axios from "axios";
+import { useStateContext } from "../Context/ContextProvider";
 function Login() {
   const [values, setValues] = useState({
     email: "",
@@ -29,10 +30,11 @@ function Login() {
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
-
+  const [{ user }, dispatch] = useStateContext();
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const history = useHistory();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const classes = useStyles();
@@ -48,8 +50,13 @@ function Login() {
     e.preventDefault();
     let document = { Email: values.email, Password: values.password };
     let response = await Axios.post("http://localhost:5000/login", document);
-    console.log(response.data.m);
-    return response.data.m;
+    dispatch({
+      type: "ADD_USER",
+      data: response.data.user,
+    });
+    if (user !== undefined) {
+      history.push(`/dashboard/${response.data.user.Email}`);
+    }
   };
   return (
     <Grid container>

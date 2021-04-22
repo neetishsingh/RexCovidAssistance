@@ -1,0 +1,22 @@
+{access: {…}}
+access:
+config:
+adapter: ƒ xhrAdapter(config)
+data: "{\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiU291bWFseWEgQmhhdHRhY2hhcnlhIiwiRW1haWwiOiJzb3VtYWx5YWJoYXR0YWNoYXJ5YTZAZ21haWwuY29tIiwiUGFzc3dvcmQiOiIkMmIkMTAkT2tjUEpWcmFSQS5kc0RGMWlwRmlmT2ZxbHc2emhWSDVYdW5kcU1UVmlYS2QuT1J5ZTFCU2EiLCJpYXQiOjE2MTkxMTY1NjF9.lLDWhrfgib5-oPp2-svn14--MY9o5QQS_D5BLbexExA\"}"
+headers: {Accept: "application/json, text/plain, */*", Content-Type: "application/json;charset=utf-8"}
+maxBodyLength: -1
+maxContentLength: -1
+method: "post"
+timeout: 0
+transformRequest: [ƒ]
+transformResponse: [ƒ]
+url: "http://localhost:5000/activate"
+validateStatus: ƒ validateStatus(status)
+xsrfCookieName: "XSRF-TOKEN"
+xsrfHeaderName: "X-XSRF-TOKEN"
+__proto__: Object
+data: {m: "ok"}
+headers: {content-length: "10", content-type: "application/json; charset=utf-8"}
+request: XMLHttpRequest {readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, onreadystatechange: ƒ, …}
+status: 200
+statusText: "OK"
