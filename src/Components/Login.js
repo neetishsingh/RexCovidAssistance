@@ -16,7 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-
+import Axios from "axios";
 function Login() {
   const [values, setValues] = useState({
     email: "",
@@ -36,6 +36,21 @@ function Login() {
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const classes = useStyles();
+  const Reset = (e) => {
+    e.preventDefault();
+    setValues({
+      email: "",
+      password: "",
+      showPassword: false,
+    });
+  };
+  const Signin = async (e) => {
+    e.preventDefault();
+    let document = { Email: values.email, Password: values.password };
+    let response = await Axios.post("http://localhost:5000/login", document);
+    console.log(response.data.m);
+    return response.data.m;
+  };
   return (
     <Grid container>
       <Paper
@@ -102,10 +117,15 @@ function Login() {
             </FormControl>
           </Grid>
           <Grid item xs={12} className={classes.buttons}>
-            <Button color="secondary" type="reset">
+            <Button color="secondary" type="reset" onClick={Reset}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={Signin}
+            >
               Submit
             </Button>
           </Grid>

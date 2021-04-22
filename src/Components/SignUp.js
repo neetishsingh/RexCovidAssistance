@@ -55,8 +55,8 @@ function Signup() {
     {
       let document = {Name: values.name, Email: values.email, Password: values.password};
       let response = await Axios.post("http://localhost:5000/signup",document);
-      console.log(response.data.m);
-      return response.data.m;
+      console.log(response.data);
+      return response.data;
     }
     else
     {
