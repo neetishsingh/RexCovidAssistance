@@ -8,7 +8,7 @@ const reducer = (state, action) => {
       case "REMOVE_USER":
         return {
           ...state,
-          user: null,
+          user: undefined,
         };
       case "ACTIVATE_TOKEN":
         return{

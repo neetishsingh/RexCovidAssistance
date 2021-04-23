@@ -46,17 +46,30 @@ function Login() {
       showPassword: false,
     });
   };
-  const Signin = async (e) => {
+  const startSession  = async(document) => {
+    let response = await Axios.post("http://localhost:5000/login", document);
+    console.log(response.data);
+    return response.data;
+  }
+  const Signin = (e) => {
     e.preventDefault();
     let document = { Email: values.email, Password: values.password };
-    let response = await Axios.post("http://localhost:5000/login", document);
-    dispatch({
-      type: "ADD_USER",
-      data: response.data.user,
-    });
-    if (user !== undefined) {
-      history.push(`/dashboard/${response.data.user.Email}`);
-    }
+    startSession(document).then((response)=> {
+      if(response.m==="Authenticed user")
+      {
+        dispatch({
+          type: "ADD_USER",
+          data: response.user,
+        });
+        history.push(`/dashboard/${response.user.Email}`);
+      }
+      else
+      {
+        console.log("User set", user);
+      }
+    }).catch((err)=>{
+      console.log("Error occoured", err);
+    })
   };
   return (
     <Grid container>

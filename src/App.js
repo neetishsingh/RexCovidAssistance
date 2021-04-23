@@ -9,7 +9,6 @@ import Datatable from "./Components/Datatable";
 import UserDashboard from "./Components/UserDashboard";
 import TopBar from "./Components/Appbar";
 function App() {
-
   return (
     <ThemeProvider theme={LightTheme}>
       <CssBaseline />
