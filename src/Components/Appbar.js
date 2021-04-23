@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -13,6 +13,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useStateContext } from "../Context/ContextProvider";
+import Axios from "axios";
 let drawerWidth;
 if (window.innerWidth > 600) {
   drawerWidth = 240;
@@ -25,6 +28,7 @@ const TopBar = (props) => {
   const classes = useStyles();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
+  const [{ user }, dispatch] = useStateContext();
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -36,6 +40,24 @@ const TopBar = (props) => {
   const login = () => {
     history.push("/login");
   };
+  const DeleteSession  = async(doc,token) =>{
+    let response = await Axios.post("http://localhost:5000/logout",doc,{headers:{
+      refreshToken: token
+    }});
+    console.log(response.data);
+    return response.data;
+  }
+  const logOut = () => {
+    DeleteSession({Email:user.Email}, user.refresh).then((response)=>{
+      dispatch({
+        type: "REMOVE_USER"
+      });
+      localStorage.removeItem('RexCovid-refreshToken');
+      history.push("/");
+    }).catch((err)=>{
+      console.log("Error occoured",err);
+    });
+  }
   return (
     <div className={classes.root}>
       <AppBar position="fixed" color="primary">
@@ -61,19 +83,40 @@ const TopBar = (props) => {
           </Link>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {mediaQuery ? (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={login}
-                startIcon={<AccountCircleIcon />}
-              >
-                Vendor Login
-              </Button>
+            {user !== undefined ? (
+              <React.Fragment>
+                {mediaQuery ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={logOut}
+                    startIcon={<ExitToAppIcon />}
+                  >
+                    Vendor Logout
+                  </Button>
+                ) : (
+                  <IconButton onClick={logOut}>
+                    <ExitToAppIcon />
+                  </IconButton>
+                )}
+              </React.Fragment>
             ) : (
-              <IconButton onClick={login}>
-                <AccountCircleIcon />
-              </IconButton>
+              <React.Fragment>
+                {mediaQuery ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={login}
+                    startIcon={<AccountCircleIcon />}
+                  >
+                    Vendor Login
+                  </Button>
+                ) : (
+                  <IconButton onClick={login}>
+                    <AccountCircleIcon />
+                  </IconButton>
+                )}
+              </React.Fragment>
             )}
           </div>
         </Toolbar>

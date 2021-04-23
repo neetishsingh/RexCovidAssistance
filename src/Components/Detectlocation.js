@@ -1,32 +1,48 @@
 import { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import MyLocationIcon from "@material-ui/icons/MyLocation";
-const Detectlocation = () => {
+import { useStateContext } from "../Context/ContextProvider";
+const Detectlocation = ({ where }) => {
   const location = [];
   const [disabled, setdisabled] = useState(false);
   const [detectlocation, setDetectlocation] = useState(false);
+  const [, dispatch] = useStateContext();
   //const [, setUpdate] = useState();
+  const success = (pos) => {
+    let crd = pos.coords;
+
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+    let locationDoc = {
+      type: "Point",
+      coordinates: [crd.longitude, crd.latitude],
+    };
+    location.push(locationDoc);
+    if (where === "vendor") {
+      dispatch({
+        type: "VENDOR_LOCATION",
+        data: locationDoc,
+      });
+    } else if (where === "user") {
+      dispatch({
+        type: "USER_LOCATION",
+        data: locationDoc,
+      });
+    } else {
+      return;
+    }
+  };
+  const errors = (err) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
   useEffect(() => {
     let options = {
       enableHighAccuracy: true,
       timeout: 5000,
       maximumAge: 0,
     };
-
-    const success = (pos) => {
-      let crd = pos.coords;
-
-      // console.log("Your current position is:");
-      // console.log(`Latitude : ${crd.latitude}`);
-      // console.log(`Longitude: ${crd.longitude}`);
-      // console.log(`More or less ${crd.accuracy} meters.`);
-      location.push({ latitude: crd.latitude, longitude: crd.longitude });
-    };
-
-    const errors = (err) => {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
-    };
-
     for (let i = 0; i < 1; i++) {
       if (detectlocation === true) {
         if (navigator.geolocation) {
@@ -58,11 +74,9 @@ const Detectlocation = () => {
         }
       }
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detectlocation]);
 
-  useEffect(() => {
-    console.log("Emit location", location);
-  });
   return (
     <Button
       variant="contained"

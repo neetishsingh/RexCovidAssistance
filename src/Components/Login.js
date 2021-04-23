@@ -13,10 +13,11 @@ import {
   Button,
   useMediaQuery,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-
+import Axios from "axios";
+import { useStateContext } from "../Context/ContextProvider";
 function Login() {
   const [values, setValues] = useState({
     email: "",
@@ -29,13 +30,48 @@ function Login() {
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
-
+  const [{ user,Backend }, dispatch] = useStateContext();
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const history = useHistory();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const classes = useStyles();
+  const Reset = (e) => {
+    e.preventDefault();
+    setValues({
+      email: "",
+      password: "",
+      showPassword: false,
+    });
+  };
+  const startSession  = async(document) => {
+    let response = await Axios.post(`${Backend}/login`, document);
+    console.log(response.data);
+    return response.data;
+  }
+  const Signin = (e) => {
+    e.preventDefault();
+    let document = { Email: values.email, Password: values.password };
+    startSession(document).then((response)=> {
+      if(response.m==="Authenticed user")
+      {
+        dispatch({
+          type: "ADD_USER",
+          data: response.user,
+        });
+        localStorage.setItem('RexCovid-refreshToken',response.user.refresh);
+        history.push(`/dashboard?user=${response.user.Email}`);
+      }
+      else
+      {
+        console.log("User set", user);
+      }
+    }).catch((err)=>{
+      console.log("Error occoured", err);
+    })
+  };
   return (
     <Grid container>
       <Paper
@@ -102,10 +138,15 @@ function Login() {
             </FormControl>
           </Grid>
           <Grid item xs={12} className={classes.buttons}>
-            <Button color="secondary" type="reset">
+            <Button color="secondary" type="reset" onClick={Reset}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={Signin}
+            >
               Submit
             </Button>
           </Grid>

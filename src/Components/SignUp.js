@@ -13,10 +13,12 @@ import {
   Button,
   useMediaQuery,
 } from "@material-ui/core";
-import {Link} from "react-router-dom";
+import {Link,useHistory} from "react-router-dom";
 import SendIcon from "@material-ui/icons/Send";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Axios from "axios";
+import { useStateContext } from "../Context/ContextProvider";
 function Signup() {
   const classes = useStyles();
   // is the minimum width 600px false for mobile devides
@@ -28,6 +30,8 @@ function Signup() {
     verfpass: "",
     showPassword: false,
   });
+  const history = useHistory();
+  const [{Backend},dispatch] = useStateContext();
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
@@ -38,6 +42,36 @@ function Signup() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const Reset = (e) =>{
+    e.preventDefault();
+    setValues({
+      name: "",
+    email: "",
+    password: "",
+    verfpass: "",
+    showPassword: false,
+    });
+  };
+  const SignUp = async(e) => {
+    e.preventDefault();
+    if(values.password===values.verfpass)
+    {
+      let document = {Name: values.name, Email: values.email, Password: values.password};
+      let response = await Axios.post(`${Backend}/signup`,document);
+      console.log(response.data);
+      dispatch({
+        type: "ADD_USER",
+        data: response.data.user
+      });
+      localStorage.setItem('RexCovid-refreshToken',response.data.user.refresh);
+      history.push(`/dashboard?user=${response.data.user.Email}`);
+    }
+    else
+    {
+      alert("Password doesn't Match");
+      return -1;
+    }
+  }
   return (
     <Grid container>
       <Paper
@@ -50,9 +84,9 @@ function Signup() {
               variant="h3"
               id="logo-font"
               className={classes.logo_grid}
-              style={{ marginBottom: "3%" }}
+              style={{ marginBottom: "3%",textAlign:"center" }}
             >
-              Vendor Sign-up
+              Vendor<br/>Sign-up
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -112,7 +146,6 @@ function Signup() {
                 onChange={handleChange("password")}
                 required
                 color="secondary"
-                autoComplete="new-password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -138,14 +171,13 @@ function Signup() {
                 Verify Password
               </InputLabel>
               <Input
-                id="password"
+                id="Verifypassword"
                 aria-describedby="Verfpassword-helper"
                 type={values.showPassword ? "text" : "password"}
                 value={values.verfpass}
                 onChange={handleChange("verfpass")}
                 required
                 color="secondary"
-                autoComplete="new-password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -164,13 +196,14 @@ function Signup() {
             </FormControl>
           </Grid>
           <Grid item xs={12} className={classes.buttons}>
-            <Button color="primary" type="reset">
+            <Button color="primary" type="reset" onClick={Reset}>
               Cancel
             </Button>
             <Button
               variant="contained"
               color="secondary"
               type="submit"
+              onClick={SignUp}
               endIcon={<SendIcon />}
             >
               Submit
