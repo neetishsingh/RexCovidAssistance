@@ -125,7 +125,7 @@ function Datatable() {
               textAlign: "center",
             }}
           >
-            No Centres Found
+            Search for Centers to see results
           </Typography>
         </Grid>
       )}

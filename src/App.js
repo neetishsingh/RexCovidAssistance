@@ -18,7 +18,7 @@ function App() {
     return user.data;
   }
   useEffect(()=>{
-    if( localStorage.getItem('RexCovid-refreshToken')!==null)
+    if( localStorage.getItem('RexCovid-refreshToken'))
     {
       // If the user has previously logged in using this browser
       let refreshToken = localStorage.getItem('RexCovid-refreshToken');

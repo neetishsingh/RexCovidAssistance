@@ -17,7 +17,7 @@ function HomeView(props) {
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const [searchRadius, setSearchRadius] = useState("");
-  const [{ Userlocation,Backend },dispatch] = useStateContext();
+  const [{ Userlocation, Backend }, dispatch] = useStateContext();
   const searchDB = async (e) => {
     e.preventDefault();
     if (Userlocation !== undefined) {
@@ -43,7 +43,7 @@ function HomeView(props) {
   return (
     <Grid container>
       <form className={mediaQuery ? classes.form_D : classes.form_M}>
-        <Grid item xs={12} lg={11}>
+        <Grid item xs={12} lg={10}>
           <Paper elevation={3}>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
@@ -65,23 +65,24 @@ function HomeView(props) {
         <Grid
           item
           xs={12}
-          lg={1}
+          lg={2}
           className={mediaQuery ? null : classes.Button_M}
+          style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
-            startIcon={<SearchIcon />}
-            type="submit"
-            onClick={searchDB}
-          >
-            Search
-          </Button>
+          {props.children}
         </Grid>
       </form>
       <Grid item xs={12} className={classes.Button_M}>
-        {props.children}
+        <Button
+          variant="contained"
+          color="secondary"
+          //style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
+          startIcon={<SearchIcon />}
+          type="submit"
+          onClick={searchDB}
+        >
+          Search
+        </Button>
       </Grid>
       <Grid item xs={12}>
         <Typography
@@ -141,9 +142,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create("width"),
     width: `calc(${window.innerWidth}px*0.78)`,
-    [theme.breakpoints.up("md")]: {
-      width: `calc(${window.innerWidth}px*0.85)`,
-    },
   },
   search_D: {
     marginLeft: theme.spacing(1),
