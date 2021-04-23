@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import TopBar from "./Appbar";
 import {
   Typography,
@@ -18,6 +18,14 @@ import { grey } from "@material-ui/core/colors";
 import Axios from "axios";
 function UserDashboard(props) {
   const [{ user, Vendorlocation, Backend }] = useStateContext();
+  const fetchPreviousData = async () => {
+    let response = await Axios.get(`${Backend}/getDetails`, {
+      headers: {
+        refreshToken: localStorage.getItem("RexCovid-refreshToken"),
+      },
+    });
+    return response.data;
+  };
   //const userEmail = props.match.params.userEmail;
   const { search } = useLocation();
   const match = search.match(/user=(.*)/);
@@ -50,25 +58,54 @@ function UserDashboard(props) {
       [event.target.name]: event.target.value,
     });
   };
+  useEffect(() => {
+    console.log("user", user);
+    if (localStorage.getItem("RexCovid-refreshToken") !== "null") {
+      console.log(
+        "calling useEffect",
+        localStorage.getItem("RexCovid-refreshToken")
+      );
+      fetchPreviousData()
+        .then((previousData) => {
+          console.log("Previous config", previousData.Details);
+          setState({
+            ...previousData.Details.Facilities,
+          });
+          setNumberState({
+            ...previousData.Details.Amount,
+          });
+        })
+        .catch((err) => {
+          console.log("Error while fetching previous data", err);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const submit = async (e) => {
     e.preventDefault();
-    let response = await Axios.post(
-      `${Backend}/userDetails`,
-      {
-        Name: user.Name,
-        Email: user.Email,
-        Facilities: state,
-        Amount: NumberStates,
-        Location: Vendorlocation,
-      },
-      {
-        headers: {
-          refreshToken: user.refresh,
+    if (Vendorlocation !== undefined) {
+      let response = await Axios.post(
+        `${Backend}/userDetails`,
+        {
+          Name: user.Name,
+          Email: user.Email,
+          Facilities: state,
+          Amount: NumberStates,
+          Location: Vendorlocation,
         },
-      }
-    );
-    console.log(response.data);
-    return response.data;
+        {
+          headers: {
+            refreshToken: user.refresh,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    }
+    else
+    {
+      alert("Wait for Location to be Detected.\n Press Search after some time");
+    }
   };
   const reset = (e) => {
     e.preventDefault();
@@ -297,7 +334,7 @@ function UserDashboard(props) {
                 <TextField
                   variant="outlined"
                   name="contact"
-                  label="Number of Quarantine Facilities"
+                  label="Contact Number"
                   className={classes.textField}
                   value={NumberStates.contact}
                   onChange={handleQuantity}
@@ -340,6 +377,7 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     width: "100%",
+    marginTop: theme.spacing(1),
   },
   sectionNames: {
     margin: theme.spacing(1),
