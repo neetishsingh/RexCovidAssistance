@@ -28,7 +28,7 @@ const TopBar = (props) => {
   const classes = useStyles();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
-  const [{ user }, dispatch] = useStateContext();
+  const [{ user,Backend }, dispatch] = useStateContext();
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -41,7 +41,7 @@ const TopBar = (props) => {
     history.push("/login");
   };
   const DeleteSession  = async(doc,token) =>{
-    let response = await Axios.post("http://localhost:5000/logout",doc,{headers:{
+    let response = await Axios.post(`${Backend}/logout`,doc,{headers:{
       refreshToken: token
     }});
     console.log(response.data);
