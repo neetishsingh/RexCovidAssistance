@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { Typography, useTheme } from "@material-ui/core";
@@ -10,28 +10,39 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import { grey } from "@material-ui/core/colors";
 import Axios from "axios";
+import { useStateContext } from "../Context/ContextProvider";
 function HomeView(props) {
   const classes = useStyles();
   const theme = useTheme();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
-  const [search,setSearch] = useState("");
-  const searchDB = async(e) => {
+  const [searchRadius, setSearchRadius] = useState("");
+  const [{ Userlocation,Backend },dispatch] = useStateContext();
+  const searchDB = async (e) => {
     e.preventDefault();
-    let response = await Axios.post("http://localhost:5000/centres",{searchTerm:search});
-    if(response.data.m === 'success')
-    {
-      console.log('success');
+    if (Userlocation !== undefined) {
+      let response = await Axios.post(`${Backend}/centres`, {
+        MyLocation: Userlocation,
+        Radius: searchRadius,
+      });
+      console.log(response.data);
+      if (response.data.m === "success") {
+        console.log("success returning", response.data);
+        dispatch({
+          type: "CENTRES_FOUND",
+          data: response.data.centresFound,
+        });
+        return response;
+      } else {
+        console.log("error");
+      }
+    } else {
+      alert("Press Detect Location");
     }
-    else
-    {
-      console.log('error');
-    }
-    return response;
-  }
+  };
   return (
     <Grid container>
-      <form className={mediaQuery?classes.form_D:classes.form_M}>
+      <form className={mediaQuery ? classes.form_D : classes.form_M}>
         <Grid item xs={12} lg={11}>
           <Paper elevation={3}>
             <div className={classes.search}>
@@ -39,13 +50,13 @@ function HomeView(props) {
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="Search Location"
+                placeholder="Search Radius in Km"
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
-                value={search}
-                onChange={(event)=>setSearch(event.target.value)}
+                value={searchRadius}
+                onChange={(event) => setSearchRadius(event.target.value)}
                 inputProps={{ "aria-label": "search" }}
               />
             </div>

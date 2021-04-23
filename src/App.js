@@ -20,11 +20,15 @@ function App() {
           <Route path="/signup">
             <SignUp />
           </Route>
-          <Route path="/dashboard/:userEmail" component={UserDashboard}/>
+          <Route path="/dashboard">
+            <UserDashboard>
+              <Detectlocation where="vendor" />
+            </UserDashboard>
+          </Route>
           <Route path="/">
             <TopBar>
               <HomeView>
-                <Detectlocation />
+                <Detectlocation where="user" />
               </HomeView>
               <Datatable />
             </TopBar>

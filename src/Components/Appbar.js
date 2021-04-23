@@ -40,13 +40,15 @@ const TopBar = (props) => {
   const login = () => {
     history.push("/login");
   };
-  const DeleteSession  = async(doc) =>{
-    let response = await Axios.post("http://localhost:5000/logout",doc);
+  const DeleteSession  = async(doc,token) =>{
+    let response = await Axios.post("http://localhost:5000/logout",doc,{headers:{
+      refreshToken: token
+    }});
     console.log(response.data);
     return response.data;
   }
   const logOut = () => {
-    DeleteSession(user).then((response)=>{
+    DeleteSession({Email:user.Email}, user.refresh).then((response)=>{
       dispatch({
         type: "REMOVE_USER"
       });

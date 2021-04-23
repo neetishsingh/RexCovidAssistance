@@ -63,7 +63,7 @@ function Signup() {
         type: "ADD_USER",
         data: response.data.user
       });
-      history.push(`/dashboard/${response.data.user.Email}`);
+      history.push(`/dashboard?user=${response.data.user.Email}`);
     }
     else
     {

@@ -61,7 +61,7 @@ function Login() {
           type: "ADD_USER",
           data: response.user,
         });
-        history.push(`/dashboard/${response.user.Email}`);
+        history.push(`/dashboard?user=${response.user.Email}`);
       }
       else
       {
