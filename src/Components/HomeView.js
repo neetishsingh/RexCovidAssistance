@@ -37,7 +37,7 @@ function HomeView(props) {
         console.log("error");
       }
     } else {
-      alert("Press Detect Location");
+      alert("Wait for Location to be Detected.\n Press Search after some time");
     }
   };
   return (

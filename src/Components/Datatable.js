@@ -50,7 +50,10 @@ function Datatable() {
                     Beds:
                   </Typography>
                 </Hidden>
-                <Badge badgeContent={detail.Amount.No_hospitalBed} color="secondary">
+                <Badge
+                  badgeContent={detail.Amount.No_hospitalBed}
+                  color="secondary"
+                >
                   <HotelIcon
                     style={{ color: IconColor(detail.Amount.No_hospitalBed) }}
                     className={classes.icons}
@@ -111,7 +114,20 @@ function Datatable() {
           </Grid>
         ))
       ) : (
-        <Typography variant="subtitle1">No Centres Found</Typography>
+        <Grid
+          item
+          xs={12}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <Typography
+            variant="subtitle1"
+            style={{
+              textAlign: "center",
+            }}
+          >
+            No Centres Found
+          </Typography>
+        </Grid>
       )}
     </Grid>
   );

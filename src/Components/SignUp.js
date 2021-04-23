@@ -31,7 +31,7 @@ function Signup() {
     showPassword: false,
   });
   const history = useHistory();
-  const [,dispatch] = useStateContext();
+  const [{Backend},dispatch] = useStateContext();
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
@@ -57,12 +57,13 @@ function Signup() {
     if(values.password===values.verfpass)
     {
       let document = {Name: values.name, Email: values.email, Password: values.password};
-      let response = await Axios.post("http://localhost:5000/signup",document);
+      let response = await Axios.post(`${Backend}/signup`,document);
       console.log(response.data);
       dispatch({
         type: "ADD_USER",
         data: response.data.user
       });
+      localStorage.setItem('RexCovid-refreshToken',response.data.user.refresh);
       history.push(`/dashboard?user=${response.data.user.Email}`);
     }
     else

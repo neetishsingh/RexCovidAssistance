@@ -52,6 +52,7 @@ const TopBar = (props) => {
       dispatch({
         type: "REMOVE_USER"
       });
+      localStorage.setItem('RexCovid-refreshToken',null);
       history.push("/");
     }).catch((err)=>{
       console.log("Error occoured",err);

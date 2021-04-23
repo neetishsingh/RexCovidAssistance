@@ -30,7 +30,7 @@ function Login() {
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
-  const [{ user }, dispatch] = useStateContext();
+  const [{ user,Backend }, dispatch] = useStateContext();
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -47,7 +47,7 @@ function Login() {
     });
   };
   const startSession  = async(document) => {
-    let response = await Axios.post("http://localhost:5000/login", document);
+    let response = await Axios.post(`${Backend}/login`, document);
     console.log(response.data);
     return response.data;
   }
@@ -61,6 +61,7 @@ function Login() {
           type: "ADD_USER",
           data: response.user,
         });
+        localStorage.setItem('RexCovid-refreshToken',response.user.refresh);
         history.push(`/dashboard?user=${response.user.Email}`);
       }
       else
