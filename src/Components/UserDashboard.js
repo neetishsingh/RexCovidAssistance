@@ -11,7 +11,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { useStateContext } from "../Context/ContextProvider";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link,useHistory } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
 import React from "react";
 import { grey } from "@material-ui/core/colors";
@@ -81,6 +81,7 @@ function UserDashboard(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const history = useHistory();
   const submit = async (e) => {
     e.preventDefault();
     if (Vendorlocation !== undefined && NumberStates.contact !== "") {
@@ -101,6 +102,7 @@ function UserDashboard(props) {
           }
         );
         console.log(response.data);
+        history.push("/");
         return response.data;
       } else {
         alert("Contact Number should be of 10 charecters");
@@ -361,9 +363,11 @@ function UserDashboard(props) {
                 onChange={handleQuantity}
               />
             </Grid>
-            <Grid item xs={12} className={classes.buttons}>
-              {props.children}
-            </Grid>
+            {Vendorlocation === undefined ? (
+              <Grid item xs={12} className={classes.buttons}>
+                {props.children}
+              </Grid>
+            ) : null}
             <Grid item xs={12} className={classes.buttons}>
               <Button color="secondary" onClick={reset}>
                 RESET
@@ -410,5 +414,5 @@ const useStyles = makeStyles((theme) => ({
   },
   homeButton: {
     margin: theme.spacing(2),
-  }
+  },
 }));
