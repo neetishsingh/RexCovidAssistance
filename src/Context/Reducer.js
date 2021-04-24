@@ -25,6 +25,11 @@ const reducer = (state, action) => {
         ...state,
         availableCentres: action.data,
       };
+    case "TOGGLE_LOADING":
+      return {
+        ...state,
+        showLoading: !state.showLoading,
+      };
     default:
       return state;
   }

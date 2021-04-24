@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment } from "react";
 import {
   Grid,
   Paper,
@@ -42,73 +42,100 @@ function Datatable() {
               </Typography>
               <div className={classes.grow} />
               <div className={classes.sectionDesktop}>
-                <Hidden mdDown>
-                  <Typography
-                    variant="subtitle2"
-                    className={classes.textParameteres}
-                  >
-                    Beds:
-                  </Typography>
-                </Hidden>
-                <Badge
-                  badgeContent={detail.Amount.No_hospitalBed}
-                  color="secondary"
-                >
-                  <HotelIcon
-                    style={{ color: IconColor(detail.Amount.No_hospitalBed) }}
-                    className={classes.icons}
-                  />
-                </Badge>
-                <Hidden mdDown>
-                  <Typography
-                    variant="subtitle2"
-                    className={classes.textParameteres}
-                  >
-                    Oxygen:
-                  </Typography>
-                </Hidden>
-                <Badge
-                  badgeContent={detail.Amount.No_oxygen}
-                  color="secondary"
-                  className={classes.icons}
-                >
-                  <BiWind
-                    style={{ color: IconColor(detail.Amount.No_oxygen) }}
-                    className={classes.icons}
-                  />
-                </Badge>
-                <Hidden mdDown>
-                  <Typography
-                    variant="subtitle2"
-                    className={classes.textParameteres}
-                  >
-                    Ventilators:
-                  </Typography>
-                </Hidden>
-                <Badge
-                  badgeContent={detail.Amount.No_ventilator}
-                  color="secondary"
-                  className={classes.icons}
-                >
-                  <FaHandHoldingHeart
-                    style={{ color: IconColor(detail.Amount.No_ventilator) }}
-                    className={classes.icons}
-                  />
-                </Badge>
-                <Hidden mdDown>
-                  <Typography
-                    variant="subtitle2"
-                    className={classes.textParameteres}
-                  >
-                    Contact:
-                  </Typography>
-                </Hidden>
-                <Link href={`tel:${detail.Amount.contact}`}>
-                  <PhoneIcon
-                    style={{ color: blue[500], verticalAlign: "middle" }}
-                    className={mediaQuery ? classes.icons : classes.PhoneIcon}
-                  />
-                </Link>
+                {/* Beds */}
+                {detail.Amount.No_hospitalBed &&
+                detail.Amount.No_hospitalBed !== "--" ? (
+                  <Fragment>
+                    <Hidden mdDown>
+                      <Typography
+                        variant="subtitle2"
+                        className={classes.textParameteres}
+                      >
+                        Beds:
+                      </Typography>
+                    </Hidden>
+                    <Badge
+                      badgeContent={detail.Amount.No_hospitalBed}
+                      color="secondary"
+                    >
+                      <HotelIcon
+                        style={{
+                          color: IconColor(detail.Amount.No_hospitalBed),
+                        }}
+                        className={classes.icons}
+                      />
+                    </Badge>
+                  </Fragment>
+                ) : null}
+                {/* Oxygen */}
+                {detail.Amount.No_oxygen && detail.Amount.No_oxygen !== "--" ? (
+                  <Fragment>
+                    <Hidden mdDown>
+                      <Typography
+                        variant="subtitle2"
+                        className={classes.textParameteres}
+                      >
+                        Oxygen:
+                      </Typography>
+                    </Hidden>
+                    <Badge
+                      badgeContent={detail.Amount.No_oxygen}
+                      color="secondary"
+                      className={classes.icons}
+                    >
+                      <BiWind
+                        style={{ color: IconColor(detail.Amount.No_oxygen) }}
+                        className={classes.icons}
+                      />
+                    </Badge>
+                  </Fragment>
+                ) : null}
+                {/* Ventilators: */}
+                {detail.Amount.No_ventilator &&
+                detail.Amount.No_ventilator !== "--" ? (
+                  <Fragment>
+                    <Hidden mdDown>
+                      <Typography
+                        variant="subtitle2"
+                        className={classes.textParameteres}
+                      >
+                        Ventilators:
+                      </Typography>
+                    </Hidden>
+                    <Badge
+                      badgeContent={detail.Amount.No_ventilator}
+                      color="secondary"
+                      className={classes.icons}
+                    >
+                      <FaHandHoldingHeart
+                        style={{
+                          color: IconColor(detail.Amount.No_ventilator),
+                        }}
+                        className={classes.icons}
+                      />
+                    </Badge>
+                  </Fragment>
+                ) : null}
+                {detail.Amount.contact && detail.Amount.contact !== "--" ? (
+                  <Fragment>
+                    <Hidden mdDown>
+                      <Typography
+                        variant="subtitle2"
+                        className={classes.textParameteres}
+                      >
+                        Contact:
+                      </Typography>
+                    </Hidden>
+                    <Link href={`tel:${detail.Amount.contact}`}>
+                      <PhoneIcon
+                        style={{ color: blue[500], verticalAlign: "middle" }}
+                        className={
+                          mediaQuery ? classes.icons : classes.PhoneIcon
+                        }
+                      />
+                    </Link>
+                  </Fragment>
+                ) : null}
               </div>
             </Paper>
           </Grid>

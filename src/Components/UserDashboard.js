@@ -1,5 +1,4 @@
 import { useState, Fragment, useEffect } from "react";
-import TopBar from "./Appbar";
 import {
   Typography,
   Grid,
@@ -12,7 +11,8 @@ import {
   Button,
 } from "@material-ui/core";
 import { useStateContext } from "../Context/ContextProvider";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import HomeIcon from "@material-ui/icons/Home";
 import React from "react";
 import { grey } from "@material-ui/core/colors";
 import Axios from "axios";
@@ -41,12 +41,12 @@ function UserDashboard(props) {
     Qfacilities: false,
   });
   const [NumberStates, setNumberState] = useState({
-    No_oxygen: "--",
-    No_ventilator: "--",
-    No_hospitalBed: "--",
-    No_doctor: "--",
-    No_Qfacilities: "--",
-    contact: "--",
+    No_oxygen: "",
+    No_ventilator: "",
+    No_hospitalBed: "",
+    No_doctor: "",
+    No_Qfacilities: "",
+    contact: "",
   });
 
   const handleChange = (event) => {
@@ -83,28 +83,32 @@ function UserDashboard(props) {
   }, []);
   const submit = async (e) => {
     e.preventDefault();
-    if (Vendorlocation !== undefined) {
-      let response = await Axios.post(
-        `${Backend}/userDetails`,
-        {
-          Name: user.Name,
-          Email: user.Email,
-          Facilities: state,
-          Amount: NumberStates,
-          Location: Vendorlocation,
-        },
-        {
-          headers: {
-            refreshToken: user.refresh,
+    if (Vendorlocation !== undefined && NumberStates.contact !== "") {
+      if (NumberStates.contact.length === 10) {
+        let response = await Axios.post(
+          `${Backend}/userDetails`,
+          {
+            Name: user.Name,
+            Email: user.Email,
+            Facilities: state,
+            Amount: NumberStates,
+            Location: Vendorlocation,
           },
-        }
+          {
+            headers: {
+              refreshToken: user.refresh,
+            },
+          }
+        );
+        console.log(response.data);
+        return response.data;
+      } else {
+        alert("Contact Number should be of 10 charecters");
+      }
+    } else {
+      alert(
+        "Error while Submitting Form\nThis can be cause by any two conditions\nLocation not Detected. (Press Detect Location Button)\nOr\nContact Number field is empty"
       );
-      console.log(response.data);
-      return response.data;
-    }
-    else
-    {
-      alert("Wait for Location to be Detected.\n Press Search after some time");
     }
   };
   const reset = (e) => {
@@ -120,240 +124,256 @@ function UserDashboard(props) {
       Qfacilities: false,
     });
     setNumberState({
-      No_oxygen: "--",
-      No_ventilator: "--",
-      No_hospitalBed: "--",
-      No_doctor: "--",
-      location: "--",
-      No_Qfacilities: "--",
-      contact: "--",
+      No_oxygen: "",
+      No_ventilator: "",
+      No_hospitalBed: "",
+      No_doctor: "",
+      location: "",
+      No_Qfacilities: "",
+      contact: "",
     });
   };
 
   return (
     <Fragment>
+      <Grid container className={classes.root}>
+        <Grid item xs={12}>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              endIcon={<HomeIcon />}
+              className={classes.homeButton}
+            >
+              Home
+            </Button>
+          </Link>
+        </Grid>
+      </Grid>
       {user !== undefined && user.Email === userEmail ? (
-        <TopBar>
-          <Grid container className={classes.root}>
-            <Grid item xs={12}>
-              <Typography variant="h3">Hello {user.Name},</Typography>
-            </Grid>
-            <Paper className={classes.paper} elevation={3}>
-              <Grid item xs={12}>
-                <Typography variant="h5"> Dashboard</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography
-                  variant="subtitle1"
-                  className={classes.formSections}
-                >
-                  Tick the Facilities you Provide
-                </Typography>
-              </Grid>
-              <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.oxygen}
-                      onChange={handleChange}
-                      name="oxygen"
-                      color="secondary"
-                    />
-                  }
-                  label="Oxygen"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.ventilator}
-                      onChange={handleChange}
-                      name="ventilator"
-                      color="secondary"
-                    />
-                  }
-                  label="Ventilator"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.hospitalBed}
-                      onChange={handleChange}
-                      name="hospitalBed"
-                      color="secondary"
-                    />
-                  }
-                  label="Hospital Bed"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.doctor}
-                      onChange={handleChange}
-                      name="doctor"
-                      color="secondary"
-                    />
-                  }
-                  label="Doctor"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.Qfacilities}
-                      onChange={handleChange}
-                      name="Qfacilities"
-                      color="secondary"
-                    />
-                  }
-                  label="Qrantine Wards"
-                />
-              </FormGroup>
-              <Grid item xs={12}>
-                <Typography
-                  variant="subtitle1"
-                  className={classes.formSections}
-                >
-                  Provide Details about your facilities
-                </Typography>
-              </Grid>
-              {state.oxygen && (
-                <Fragment>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="body1"
-                      color="secondary"
-                      className={classes.sectionNames}
-                    >
-                      Oxygen
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      name="No_oxygen"
-                      label="Number of Oxygen Cylinders"
-                      className={classes.textField}
-                      value={NumberStates.No_oxygen}
-                      onChange={handleQuantity}
-                    />
-                  </Grid>
-                </Fragment>
-              )}
-              {state.ventilator && (
-                <Fragment>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="body1"
-                      color="secondary"
-                      className={classes.sectionNames}
-                    >
-                      Ventilators
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      name="No_ventilator"
-                      label="Number of Ventilators"
-                      className={classes.textField}
-                      value={NumberStates.No_ventilator}
-                      onChange={handleQuantity}
-                    />
-                  </Grid>
-                </Fragment>
-              )}
-              {state.hospitalBed && (
-                <Fragment>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="body1"
-                      color="secondary"
-                      className={classes.sectionNames}
-                    >
-                      Beds
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      label="Number of Beds available"
-                      name="No_hospitalBed"
-                      className={classes.textField}
-                      value={NumberStates.No_hospitalBed}
-                      onChange={handleQuantity}
-                    />
-                  </Grid>
-                </Fragment>
-              )}
-              {state.doctor && (
-                <Fragment>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="body1"
-                      color="secondary"
-                      className={classes.sectionNames}
-                    >
-                      Doctors
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      name="No_doctor"
-                      label="Number of Doctors on Duty"
-                      className={classes.textField}
-                      value={NumberStates.No_doctor}
-                      onChange={handleQuantity}
-                    />
-                  </Grid>
-                </Fragment>
-              )}
-              {state.Qfacilities && (
-                <Fragment>
-                  <Grid item xs={12}>
-                    <Typography
-                      variant="body1"
-                      color="secondary"
-                      className={classes.sectionNames}
-                    >
-                      Quarantine Facilities
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      name="No_Qfacilities"
-                      label="Number of Quarantine Facilities"
-                      className={classes.textField}
-                      value={NumberStates.No_Qfacilities}
-                      onChange={handleQuantity}
-                    />
-                  </Grid>
-                </Fragment>
-              )}
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  name="contact"
-                  label="Contact Number"
-                  className={classes.textField}
-                  value={NumberStates.contact}
-                  onChange={handleQuantity}
-                />
-              </Grid>
-              <Grid item xs={12} className={classes.buttons}>
-                {props.children}
-              </Grid>
-              <Grid item xs={12} className={classes.buttons}>
-                <Button color="secondary" onClick={reset}>
-                  RESET
-                </Button>
-                <Button variant="contained" color="primary" onClick={submit}>
-                  SUBMIT
-                </Button>
-              </Grid>
-            </Paper>
+        <Grid container className={classes.root}>
+          <Grid item xs={12}>
+            <Typography variant="h3">Hello {user.Name},</Typography>
           </Grid>
-        </TopBar>
+          <Paper className={classes.paper} elevation={3}>
+            <Grid item xs={12}>
+              <Typography variant="h5"> Dashboard</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" className={classes.formSections}>
+                Tick the Facilities you Provide
+              </Typography>
+            </Grid>
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.oxygen}
+                    onChange={handleChange}
+                    name="oxygen"
+                    color="secondary"
+                  />
+                }
+                label="Oxygen"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.ventilator}
+                    onChange={handleChange}
+                    name="ventilator"
+                    color="secondary"
+                  />
+                }
+                label="Ventilator"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.hospitalBed}
+                    onChange={handleChange}
+                    name="hospitalBed"
+                    color="secondary"
+                  />
+                }
+                label="Hospital Bed"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.doctor}
+                    onChange={handleChange}
+                    name="doctor"
+                    color="secondary"
+                  />
+                }
+                label="Doctor"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.Qfacilities}
+                    onChange={handleChange}
+                    name="Qfacilities"
+                    color="secondary"
+                  />
+                }
+                label="Qrantine Wards"
+              />
+            </FormGroup>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" className={classes.formSections}>
+                Provide Details about your facilities
+              </Typography>
+            </Grid>
+            {state.oxygen && (
+              <Fragment>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    className={classes.sectionNames}
+                  >
+                    Oxygen
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    name="No_oxygen"
+                    label="Number of Oxygen Cylinders"
+                    className={classes.textField}
+                    value={NumberStates.No_oxygen}
+                    onChange={handleQuantity}
+                  />
+                </Grid>
+              </Fragment>
+            )}
+            {state.ventilator && (
+              <Fragment>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    className={classes.sectionNames}
+                  >
+                    Ventilators
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    name="No_ventilator"
+                    label="Number of Ventilators"
+                    className={classes.textField}
+                    value={NumberStates.No_ventilator}
+                    onChange={handleQuantity}
+                  />
+                </Grid>
+              </Fragment>
+            )}
+            {state.hospitalBed && (
+              <Fragment>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    className={classes.sectionNames}
+                  >
+                    Beds
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    label="Number of Beds available"
+                    name="No_hospitalBed"
+                    className={classes.textField}
+                    value={NumberStates.No_hospitalBed}
+                    onChange={handleQuantity}
+                  />
+                </Grid>
+              </Fragment>
+            )}
+            {state.doctor && (
+              <Fragment>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    className={classes.sectionNames}
+                  >
+                    Doctors
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    name="No_doctor"
+                    label="Number of Doctors on Duty"
+                    className={classes.textField}
+                    value={NumberStates.No_doctor}
+                    onChange={handleQuantity}
+                  />
+                </Grid>
+              </Fragment>
+            )}
+            {state.Qfacilities && (
+              <Fragment>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body1"
+                    color="secondary"
+                    className={classes.sectionNames}
+                  >
+                    Quarantine Facilities
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    variant="outlined"
+                    name="No_Qfacilities"
+                    label="Number of Quarantine Facilities"
+                    className={classes.textField}
+                    value={NumberStates.No_Qfacilities}
+                    onChange={handleQuantity}
+                  />
+                </Grid>
+              </Fragment>
+            )}
+            <Grid item xs={12}>
+              <Typography
+                variant="body1"
+                color="secondary"
+                className={classes.sectionNames}
+              >
+                Contact Number
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                name="contact"
+                label="Contact Number"
+                required
+                className={classes.textField}
+                value={NumberStates.contact}
+                onChange={handleQuantity}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.buttons}>
+              {props.children}
+            </Grid>
+            <Grid item xs={12} className={classes.buttons}>
+              <Button color="secondary" onClick={reset}>
+                RESET
+              </Button>
+              <Button variant="contained" color="primary" onClick={submit}>
+                SUBMIT
+              </Button>
+            </Grid>
+          </Paper>
+        </Grid>
       ) : (
         <h1 style={{ color: "red" }}>You are not allwed here !</h1>
       )}
@@ -388,4 +408,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  homeButton: {
+    margin: theme.spacing(2),
+  }
 }));
