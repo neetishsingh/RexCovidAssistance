@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { Typography, useTheme } from "@material-ui/core";
@@ -8,40 +8,85 @@ import SearchIcon from "@material-ui/icons/Search";
 import SortIcon from "@material-ui/icons/Sort";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import { grey } from "@material-ui/core/colors";
+import { deepPurple, grey } from "@material-ui/core/colors";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 import { useStateContext } from "../Context/ContextProvider";
-function HomeView(props) {
+function HomeView({ children }) {
   const classes = useStyles();
   const theme = useTheme();
   // is the minimum width 600px false for mobile devides
   const mediaQuery = useMediaQuery("(min-width:600px)");
   const [searchRadius, setSearchRadius] = useState("");
-  const [{ Userlocation, Backend }, dispatch] = useStateContext();
-  const searchDB = async (e) => {
-    e.preventDefault();
+  const [{ Userlocation, Backend, user }, dispatch] = useStateContext();
+  const [resultInfo, setResultInfo] = useState({
+    TotalResults: "",
+    searchRadius: 0,
+  });
+  const searchDB = async () => {
     if (Userlocation !== undefined) {
       let response = await Axios.post(`${Backend}/centres`, {
         MyLocation: Userlocation,
-        Radius: searchRadius,
+        Radius: searchRadius !== "" ? searchRadius : 2,
       });
-      console.log(response.data);
       if (response.data.m === "success") {
         console.log("success returning", response.data);
         dispatch({
           type: "CENTRES_FOUND",
           data: response.data.centresFound,
         });
-        return response;
+        setResultInfo({
+          TotalResults: response.data.TotalResults,
+          searchRadius: response.data.searchRadius,
+        });
+        return response.data;
       } else {
         console.log("error");
       }
     } else {
-      alert("Wait for Location to be Detected.\n Press Search after some time");
+      console.log("Detecting Location Wait for Sometime...");
     }
   };
+  const customSearch = (e) => {
+    e.preventDefault();
+    searchDB();
+  };
+  const automatedSearch = () => {
+    searchDB()
+      .then((resp) => {
+        console.log("response came here", resp);
+      })
+      .catch((err) => {
+        console.log("Error in fetching cards", err);
+      });
+  };
+  useEffect(() => {
+    if (Userlocation !== undefined) {
+      setTimeout(automatedSearch, 2000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Userlocation]);
+
   return (
     <Grid container>
+      <Grid item xs={12} lg={12} style={{ justifyContent: "center",
+    display: "flex", marginBottom: theme.spacing(1)}}>
+        {user !== undefined ? (
+          <Link
+            to={`/dashboard?user=${user.Email}`}
+            style={{ textDecoration: "none" }}
+          >
+            <Button
+              variant="contained"
+              style={{backgroundColor: deepPurple[500], color: "#ffffff"}}
+              endIcon={<DashboardIcon />}
+            >
+              Your Dashboard
+            </Button>
+          </Link>
+        ) : null}
+      </Grid>
       <form className={mediaQuery ? classes.form_D : classes.form_M}>
         <Grid item xs={12} lg={10}>
           <Paper elevation={3}>
@@ -69,7 +114,7 @@ function HomeView(props) {
           className={mediaQuery ? null : classes.Button_M}
           style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
         >
-          {props.children}
+          {children}
         </Grid>
       </form>
       <Grid item xs={12} className={classes.Button_M}>
@@ -79,7 +124,7 @@ function HomeView(props) {
           //style={mediaQuery ? { marginLeft: theme.spacing(1) } : null}
           startIcon={<SearchIcon />}
           type="submit"
-          onClick={searchDB}
+          onClick={customSearch}
         >
           Search
         </Button>
@@ -100,6 +145,27 @@ function HomeView(props) {
           }}
         />
       </Grid>
+      {resultInfo.TotalResults !== "" && resultInfo.searchRadius !== "" ? (
+        <Grid item xs={12}>
+          <Typography
+            variant="body1"
+            style={{ display: "inline-flex", color: grey[800] }}
+          >
+            Centres Found: {resultInfo.TotalResults}
+            &nbsp;&nbsp;&nbsp;&nbsp;Search Raduis: {resultInfo.searchRadius} km
+          </Typography>
+        </Grid>
+      ) : (
+        <Grid item xs={12}>
+          <Typography
+            variant="body1"
+            style={{ display: "inline-flex", color: grey[800] }}
+          >
+            Centres Found: 0 &nbsp;&nbsp;&nbsp;&nbsp;Search Raduis:{" "}
+            {resultInfo.searchRadius} km
+          </Typography>
+        </Grid>
+      )}
     </Grid>
   );
 }

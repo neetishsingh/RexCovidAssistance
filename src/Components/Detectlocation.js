@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import MyLocationIcon from "@material-ui/icons/MyLocation";
 import { useStateContext } from "../Context/ContextProvider";
-const Detectlocation = ({ where }) => {
+const Detectlocation = ({ where}) => {
   const location = [];
   const [disabled, setdisabled] = useState(false);
-  const [detectlocation, setDetectlocation] = useState(false);
+  const [detectlocation, setDetectlocation] = useState(where==="user"?true:false);
   const [, dispatch] = useStateContext();
   //const [, setUpdate] = useState();
   const success = (pos) => {
