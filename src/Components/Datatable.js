@@ -170,7 +170,7 @@ function Datatable() {
                     </Badge>
                   </Fragment>
                 ) : null}
-                {detail.Amount.contact && detail.Amount.contact !== "--" ? (
+                {detail.Amount.contact && detail.Amount.contact !== "" ? (
                   <Fragment>
                     <Hidden mdDown>
                       <Typography
