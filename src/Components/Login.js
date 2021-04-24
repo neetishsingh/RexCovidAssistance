@@ -74,13 +74,13 @@ function Login() {
         } else if (response.m === "Single User Multiple Session") {
           setShowLoader(false);
           alert(
-            "You alrady have logged in through one device signout from that first"
+            "You alrady have logged in"
           );
         } else {
           console.log("User not set", user);
           setShowLoader(false);
           alert(
-            "You alrady have logged in through one device signout from that first"
+            "You alrady have logged in through one device signout from that first \n Or User doesn't exist"
           );
         }
       })

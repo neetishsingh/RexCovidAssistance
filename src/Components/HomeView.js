@@ -70,8 +70,16 @@ function HomeView({ children }) {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} style={{ justifyContent: "center",
-    display: "flex", marginBottom: theme.spacing(1)}}>
+      <Grid
+        item
+        xs={12}
+        lg={12}
+        style={{
+          justifyContent: "center",
+          display: "flex",
+          marginBottom: theme.spacing(1),
+        }}
+      >
         {user !== undefined ? (
           <Link
             to={`/dashboard?user=${user.Email}`}
@@ -79,7 +87,7 @@ function HomeView({ children }) {
           >
             <Button
               variant="contained"
-              style={{backgroundColor: deepPurple[500], color: "#ffffff"}}
+              style={{ backgroundColor: deepPurple[500], color: "#ffffff" }}
               endIcon={<DashboardIcon />}
             >
               Your Dashboard
@@ -161,7 +169,7 @@ function HomeView({ children }) {
             variant="body1"
             style={{ display: "inline-flex", color: grey[800] }}
           >
-            Centres Found: 0 &nbsp;&nbsp;&nbsp;&nbsp;Search Raduis:{" "}
+            Centres Found: 0 &nbsp;&nbsp;&nbsp;&nbsp;Search Raduis:
             {resultInfo.searchRadius} km
           </Typography>
         </Grid>
