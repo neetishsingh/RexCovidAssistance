@@ -16,7 +16,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import Visibility from "@material-ui/icons/Visibility";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Backdrop from '@material-ui/core/Backdrop';
+import Backdrop from "@material-ui/core/Backdrop";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Axios from "axios";
 import { useStateContext } from "../Context/ContextProvider";
@@ -71,8 +71,17 @@ function Login() {
         } else if (response.m === "Wrong Password") {
           setShowLoader(false);
           alert("Email or Password Wrong");
+        } else if (response.m === "Single User Multiple Session") {
+          setShowLoader(false);
+          alert(
+            "You alrady have logged in through one device signout from that first"
+          );
         } else {
           console.log("User not set", user);
+          setShowLoader(false);
+          alert(
+            "You alrady have logged in through one device signout from that first"
+          );
         }
       })
       .catch((err) => {
@@ -83,7 +92,7 @@ function Login() {
     <Fragment>
       {ShowLoader ? (
         <Backdrop className={classes.backdrop} open={ShowLoader}>
-        <CircularProgress color="secondary" />
+          <CircularProgress color="secondary" />
         </Backdrop>
       ) : (
         <Grid container>
@@ -240,6 +249,6 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
